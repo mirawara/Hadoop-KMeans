@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class Point implements WritableComparable<Point> {
 	
 	private ArrayList<Double> coordinates;
+	private int instances;
 	
 	/**
 	 * Constructor for point class
@@ -19,7 +20,10 @@ public class Point implements WritableComparable<Point> {
 	 */
 	public Point(ArrayList<Double> coordinates_) {
 		this.coordinates = coordinates_;
+		this.instances = 1;
 	}
+	
+	/* WritableComparable implementation */
 	
 	/**
 	 * @param point the object to be compared.
@@ -50,6 +54,7 @@ public class Point implements WritableComparable<Point> {
 		for (Double coordinate : this.coordinates){
 			dataOutput.writeDouble(coordinate);
 		}
+		dataOutput.writeInt(instances);
 	}
 	
 	/**
@@ -63,7 +68,10 @@ public class Point implements WritableComparable<Point> {
 			double value = dataInput.readDouble();
 			this.coordinates.add(value);
 		}
+		this.instances = dataInput.readInt();
 	}
+	
+	/* Operations on points */
 	
 	/**
 	 * @param point
@@ -77,11 +85,29 @@ public class Point implements WritableComparable<Point> {
 		return Math.sqrt(sum);
 	}
 	
+	public void add(Point point){
+		for (int i = 0; i < this.coordinates.size(); i++){
+			this.coordinates.set(i, this.coordinates.get(i) + point.getCoordinates().get(i));
+			System.out.print(this.coordinates.get(i) + " ");
+		}
+		this.instances += point.getInstances();
+	}
+	
+	public void average(){
+		this.coordinates.replaceAll(aDouble -> aDouble / this.instances);
+	}
+	
+	/* Getters and setters */
+	
 	public ArrayList<Double> getCoordinates() {
 		return coordinates;
 	}
 	
 	public void setCoordinates(ArrayList<Double> coordinates) {
 		this.coordinates = coordinates;
+	}
+	
+	public int getInstances() {
+		return instances;
 	}
 }
