@@ -1,4 +1,4 @@
-package main.java.it.unipi.hadoop;
+package it.unipi.hadoop;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -32,7 +32,8 @@ public class KMeans {
 
         boolean converged = false;
         int iteration = 0;
-
+        
+        fs.delete(outputPath,true);
         while (!converged && iteration < KMeansUtil.DEFAULT_MAX_ITERATIONS) {
 
             Job job = KMeansUtil.configureJob(conf, inputPath, outputPath, numReducers, iteration);

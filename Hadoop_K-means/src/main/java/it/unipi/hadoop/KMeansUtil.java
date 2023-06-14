@@ -1,4 +1,4 @@
-package main.java.it.unipi.hadoop;
+package it.unipi.hadoop;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;

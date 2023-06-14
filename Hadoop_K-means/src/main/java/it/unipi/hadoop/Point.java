@@ -1,4 +1,4 @@
-package main.java.it.unipi.hadoop;
+package it.unipi.hadoop;
 
 import com.sun.istack.NotNull;
 import org.apache.hadoop.io.WritableComparable;
