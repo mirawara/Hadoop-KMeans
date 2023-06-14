@@ -28,7 +28,7 @@ public class KMeans {
         try {
             job = Job.getInstance(conf, "K-Means Iteration " + iteration);
             job.setJarByClass(KMeans.class);
-            job.setMapperClass(KMeansMapper);
+            job.setMapperClass(KMeansMapper.class);
             job.setCombinerClass(KMeansCombiner.class);
             job.setMapOutputKeyClass(Centroid.class);
             job.setMapOutputValueClass(Point.class);

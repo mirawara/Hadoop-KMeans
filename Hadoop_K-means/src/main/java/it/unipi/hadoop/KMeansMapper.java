@@ -63,7 +63,7 @@ public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
 		}
 		// If we are in the first iteration no centroids will be found, get random ones
 		super.setup(context);
-		String inputPath = context.getConfiguration().get("centroids");
+		String inputPath = context.getConfiguration().get("centroidPath");
 		centroids = readCentroids(inputPath);
 	}
 	
