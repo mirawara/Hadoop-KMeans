@@ -23,6 +23,15 @@ public class Point implements WritableComparable<Point> {
 		this.instances = 1;
 	}
 	
+	public Point(String text) throws NullPointerException {
+		String[] c = text.split(" ");
+		this.coordinates = new ArrayList<>();
+		for (String x : c) {
+			this.coordinates.add(Double.parseDouble(x));
+		}
+	}
+	
+	
 	/* WritableComparable implementation */
 	
 	/**
