@@ -1,14 +1,56 @@
 package it.unipi.hadoop;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
 
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 
 public class KMeans {
+
+    /**
+     * Extract the centroids from file
+     *
+     * @param path path to the file that contains the centroids
+     * @return ArrayList of Centroid objects
+     * @throws IOException if an I/O error occurs during file reading
+     */
+    public static ArrayList<Centroid> readCentroids(String path) throws IOException {
+        ArrayList<Centroid> centroids = new ArrayList<>();
+        DataInputStream in = new DataInputStream(Files.newInputStream(Paths.get(path)));
+        while (in.available() > 0) {
+            // Create a new Centroid object
+            Centroid centroid = new Centroid();
+            // Deserialize the centroid from the input stream
+            centroid.readFields(in);
+            centroids.set(centroid.getCentroid_id().get(), centroid);
+        }
+        in.close();
+        return centroids;
+    }
+    public static ArrayList<Centroid> readCentroids(String path, Configuration conf) throws IOException {
+        ArrayList<Centroid> centroids = new ArrayList<>();
+        FileSystem fs = FileSystem.get(conf);
+        FSDataInputStream in = fs.open(new Path(path));
+        while (in.available() > 0) {
+            // Create a new Centroid object
+            Centroid centroid = new Centroid();
+            // Deserialize the centroid from the input stream
+            centroid.readFields(in);
+            centroids.set(centroid.getCentroid_id().get(), centroid);
+        }
+        in.close();
+
+        return centroids;
+    }
+
 
 
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
@@ -27,13 +69,20 @@ public class KMeans {
         Configuration conf = new Configuration();
         FileSystem fs = FileSystem.get(conf);
 
-        // Set centroid path in the configuration
-        conf.set("centroidPath", centroidPath);
+
+        // Set centroids in the configuration
+
+        //[centroid.getPoint().toString() for centroid in centroids]
+        //Per ogni centroide nella lista di centroidi mi prendo la stringa delle coordinate del punto
+        conf.setStrings("centroids", readCentroids(centroidPath,conf).stream()
+                .map(centroid -> centroid.getPoint().toString())
+                .toArray(String[]::new));
+
 
         boolean converged = false;
         int iteration = 0;
-        
-        fs.delete(outputPath,true);
+
+        fs.delete(outputPath, true);
         while (!converged && iteration < KMeansUtil.DEFAULT_MAX_ITERATIONS) {
 
             Job job = KMeansUtil.configureJob(conf, inputPath, outputPath, numReducers, iteration);
@@ -53,13 +102,23 @@ public class KMeans {
                 fs.rename(new Path(outputPath, "part-00000"), new Path(outputPath, KMeansUtil.OUTPUT_NAME + iteration));
             }
             // Check convergence
-            double shift = KMeansUtil.calculateCentroidShift( centroidPath, outputPath, iteration);
+            if (iteration > 0) {
+                centroidPath = outputPath + KMeansUtil.OUTPUT_NAME + (iteration - 1);
+            }
+            // Read current centroids
+            String currentCentroidFile = outputPath + KMeansUtil.OUTPUT_NAME + iteration;
+            ArrayList<Centroid> currentCentroids=readCentroids(currentCentroidFile);
+            double shift = KMeansUtil.calculateCentroidShift(centroidPath, currentCentroids);
             converged = (shift < KMeansUtil.DEFAULT_THRESHOLD);
-
+            if (!converged) {
+                conf.setStrings("centroids", readCentroids(currentCentroidFile).stream()
+                        .map(centroid -> centroid.getPoint().toString())
+                        .toArray(String[]::new));
+            }
             iteration++;
         }
 
-        KMeansUtil.cleanup(iteration,fs,outputPath);
+        KMeansUtil.cleanup(iteration, fs, outputPath);
 
     }
 

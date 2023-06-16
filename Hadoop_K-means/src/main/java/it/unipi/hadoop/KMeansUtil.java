@@ -15,7 +15,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,26 +27,7 @@ public class KMeansUtil {
 
     public static final String OUTPUT_NAME = "output_centroids";
 
-    /**
-     * Extract the centroids from file
-     *
-     * @param path path to the file that contains the centroids
-     * @return ArrayList of Centroid objects
-     * @throws IOException if an I/O error occurs during file reading
-     */
-    public static ArrayList<Centroid> readCentroids(String path) throws IOException {
-        ArrayList<Centroid> centroids = new ArrayList<>();
-        DataInputStream in = new DataInputStream(Files.newInputStream(Paths.get(path)));
-        while (in.available() > 0) {
-            // Create a new Centroid object
-            Centroid centroid = new Centroid();
-            // Deserialize the centroid from the input stream
-            centroid.readFields(in);
-            centroids.add(centroid);
-        }
-        in.close();
-        return centroids;
-    }
+
 
     public static Job configureJob(Configuration conf, Path inputPath, Path outputPath, int numReducers, int iteration) {
         Job job;
@@ -63,12 +43,9 @@ public class KMeansUtil {
             job.setOutputKeyClass(IntWritable.class);
             job.setOutputValueClass(Text.class);
             FileInputFormat.addInputPath(job, inputPath);
-            if (iteration > 0) {
 
-                job.addCacheFile(URI.create(outputPath + OUTPUT_NAME + (iteration - 1)));
-                if (iteration > 1) {
-                    FileSystem.get(conf).delete(new Path(outputPath, OUTPUT_NAME + (iteration - 2)), true);
-                }
+            if (iteration > 1) {
+                FileSystem.get(conf).delete(new Path(outputPath, OUTPUT_NAME + (iteration - 2)), true);
             }
             FileOutputFormat.setOutputPath(job, outputPath);
         } catch (IOException e) {
@@ -94,19 +71,12 @@ public class KMeansUtil {
         out.close();
     }
 
-    public static double calculateCentroidShift(String previousCentroidFile, Path outputPath, int iteration)
+    public static double calculateCentroidShift(String previousCentroidFile, ArrayList<Centroid> currentCentroids)
             throws IOException {
 
-        if (iteration > 0) {
-            previousCentroidFile = outputPath + OUTPUT_NAME + (iteration - 1);
-        }
-
         // Read previous centroids
-        ArrayList<Centroid> previousCentroids = KMeansUtil.readCentroids(previousCentroidFile);
+        ArrayList<Centroid> previousCentroids = KMeans.readCentroids(previousCentroidFile);
 
-        // Read current centroids
-        String currentCentroidFile = outputPath + OUTPUT_NAME + iteration;
-        ArrayList<Centroid> currentCentroids = KMeansUtil.readCentroids(currentCentroidFile);
         // Calculate centroid shift
         double shift = 0.0;
         for (int i = 0; i < previousCentroids.size(); i++) {

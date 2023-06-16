@@ -1,14 +1,15 @@
 package it.unipi.hadoop;
 
 import com.sun.istack.NotNull;
-import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.Writable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-public class Point implements WritableComparable<Point> {
+public class Point implements Writable {
 	
 	private ArrayList<Double> coordinates;
 	private int instances;
@@ -32,26 +33,7 @@ public class Point implements WritableComparable<Point> {
 	}
 	
 	
-	/* WritableComparable implementation */
-	
-	/**
-	 * @param point the object to be compared.
-	 * @return :
-	 * 0 if the point is equal to the current
-	 * 1 if this point is greater
-	 * -1 if this point is lower
-	 */
-	@Override
-	public int compareTo(@NotNull Point point) {
-		for (int i = 0; i < this.coordinates.size(); i++) {
-			if (this.coordinates.get(i) < point.coordinates.get(i)) {
-				return -1;
-			} else if (this.coordinates.get(i) > point.coordinates.get(i)) {
-				return 1;
-			}
-		}
-		return 0;
-	}
+	/* Writable implementation */
 	
 	/**
 	 * @param dataOutput
@@ -118,5 +100,11 @@ public class Point implements WritableComparable<Point> {
 	
 	public int getInstances() {
 		return instances;
+	}
+
+	public String toString(){
+		return this.coordinates.stream()
+				.map(Object::toString)
+				.collect(Collectors.joining(","));
 	}
 }
