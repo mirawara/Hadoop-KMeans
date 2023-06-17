@@ -6,11 +6,13 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
 
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Stream;
 
 
 public class KMeans {
@@ -35,19 +37,36 @@ public class KMeans {
         in.close();
         return centroids;
     }
-    public static ArrayList<Centroid> readCentroids(String path, Configuration conf) throws IOException {
+    public static ArrayList<Centroid> readCentroids(String pathString, Configuration conf) throws IOException {
         ArrayList<Centroid> centroids = new ArrayList<>();
-        FileSystem fs = FileSystem.get(conf);
-        FSDataInputStream in = fs.open(new Path(path));
-        while (in.available() > 0) {
-            // Create a new Centroid object
-            Centroid centroid = new Centroid();
-            // Deserialize the centroid from the input stream
-            centroid.readFields(in);
-            centroids.set(centroid.getCentroid_id().get(), centroid);
-        }
-        in.close();
+        Path path = new Path(pathString);
+        FileSystem hdfs = FileSystem.get(conf);
+        FSDataInputStream in = hdfs.open(path);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line;
 
+        while ((line = reader.readLine()) != null) {
+            String[] fields = line.split(",");
+
+            // Creare un nuovo oggetto Centroid
+            Centroid centroid = new Centroid();
+
+            // Impostare l'ID del centroide
+            int centroidId = (int) Double.parseDouble(fields[0]);
+            centroid.getCentroid_id().set( centroidId);
+
+            ArrayList<Double> coords =new ArrayList<>();
+            for (int i = 1; i < fields.length-1; i++) {
+                double value = Double.parseDouble(fields[i]);
+                coords.add(value);
+            }
+            Point point = new Point(coords, Integer.parseInt(fields[fields.length-1]));
+            centroid.setPoint(point);
+            centroids.add(centroidId,centroid);
+        }
+
+        in.close();
+        Collections.sort(centroids);
         return centroids;
     }
 

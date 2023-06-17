@@ -25,7 +25,7 @@ public class KMeansUtil {
     public static final double DEFAULT_THRESHOLD = 0.001;
     public static final int DEFAULT_MAX_ITERATIONS = 10;
 
-    public static final String OUTPUT_NAME = "output_centroids";
+    public static final String OUTPUT_NAME = "/output_centroids";
 
 
 
@@ -36,7 +36,7 @@ public class KMeansUtil {
             job.setJarByClass(KMeans.class);
             job.setMapperClass(KMeansMapper.class);
             job.setCombinerClass(KMeansCombiner.class);
-            job.setMapOutputKeyClass(Centroid.class);
+            job.setMapOutputKeyClass(IntWritable.class);
             job.setMapOutputValueClass(Point.class);
             job.setNumReduceTasks(numReducers);
             job.setReducerClass(KMeansReducer.class);

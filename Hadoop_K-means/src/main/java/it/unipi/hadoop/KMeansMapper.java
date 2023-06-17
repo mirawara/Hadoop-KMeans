@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
+public class KMeansMapper extends Mapper<Object, Text, IntWritable, Point> {
 
     private static ArrayList<Centroid> centroids;
 
@@ -43,7 +43,7 @@ public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
             System.out.println("Error: centroid_id is null");
             return;
         }
-        context.write(centroids.get(centroid_id.get()), point);
+        context.write(centroid_id, point);
     }
 
     /**
@@ -53,7 +53,7 @@ public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
 
-
+        centroids=new ArrayList<>();
         super.setup(context);
         String[] centroidStrings = context.getConfiguration().getStrings("centroids");
         // Get the values of the centroids
@@ -62,6 +62,7 @@ public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
                     .map(Double::parseDouble)
                     .collect(Collectors.toCollection(ArrayList::new))));
         }
+
     }
 }
 

@@ -3,6 +3,8 @@ package it.unipi.hadoop;
 import com.sun.istack.NotNull;
 import org.apache.hadoop.io.Writable;
 
+import javax.xml.crypto.Data;
+import java.awt.dnd.DropTarget;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -19,17 +21,23 @@ public class Point implements Writable {
 	 *
 	 * @param coordinates_ Coordinates of the new point
 	 */
-	public Point(ArrayList<Double> coordinates_) {
+	public Point(ArrayList<Double> coordinates_,int instances) {
 		this.coordinates = coordinates_;
-		this.instances = 1;
+		this.instances = instances;
+	}
+
+	public Point(){
+		this.coordinates=new ArrayList<>();
+		this.instances=1;
 	}
 	
 	public Point(String text) throws NullPointerException {
-		String[] c = text.split(" ");
+		String[] c = text.split(",");
 		this.coordinates = new ArrayList<>();
 		for (String x : c) {
 			this.coordinates.add(Double.parseDouble(x));
 		}
+		this.instances=1;
 	}
 	
 	
@@ -55,7 +63,8 @@ public class Point implements Writable {
 	@Override
 	public void readFields(DataInput dataInput) throws IOException {
 		this.coordinates = new ArrayList<>();
-		for (int i = 0; i < dataInput.readInt(); i++) {
+		int size = dataInput.readInt();
+		for (int i = 0; i < size; i++) {
 			double value = dataInput.readDouble();
 			this.coordinates.add(value);
 		}

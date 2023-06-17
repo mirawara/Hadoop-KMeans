@@ -2,6 +2,8 @@ package it.unipi.hadoop;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.yarn.webapp.hamlet2.Hamlet;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -9,7 +11,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Centroid implements Writable, Serializable {
+public class Centroid implements WritableComparable<Centroid> {
 
     private Point point;
 
@@ -18,9 +20,12 @@ public class Centroid implements Writable, Serializable {
 
     public Centroid(int centroid_id, ArrayList<Double> coords){
         this.centroid_id = new IntWritable(centroid_id);
-        this.point=new Point(coords);
+        this.point=new Point(coords,1);
     }
-    public  Centroid(){}
+    public  Centroid(){
+        this.centroid_id=new IntWritable();
+        this.point=new Point();
+    }
 
     /* Writable implementation */
 
@@ -54,4 +59,9 @@ public class Centroid implements Writable, Serializable {
         this.centroid_id = centroid_id;
     }
 
+    @Override
+    public int compareTo(Centroid other) {
+        // Confronta gli ID dei centroidi
+        return Double.compare(this.getCentroid_id().get(), other.getCentroid_id().get());
+    }
 }
