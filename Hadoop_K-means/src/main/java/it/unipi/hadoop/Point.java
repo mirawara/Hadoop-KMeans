@@ -1,14 +1,17 @@
 package it.unipi.hadoop;
 
 import com.sun.istack.NotNull;
-import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.Writable;
 
+import javax.xml.crypto.Data;
+import java.awt.dnd.DropTarget;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-public class Point implements WritableComparable<Point> {
+public class Point implements Writable {
 	
 	private ArrayList<Double> coordinates;
 	private int instances;
@@ -22,36 +25,23 @@ public class Point implements WritableComparable<Point> {
 		this.coordinates = coordinates_;
 		this.instances = 1;
 	}
+
+	public Point(){
+		this.coordinates=new ArrayList<>();
+		this.instances=1;
+	}
 	
 	public Point(String text) throws NullPointerException {
-		String[] c = text.split(" ");
+		String[] c = text.split(",");
 		this.coordinates = new ArrayList<>();
 		for (String x : c) {
 			this.coordinates.add(Double.parseDouble(x));
 		}
+		this.instances=1;
 	}
 	
 	
-	/* WritableComparable implementation */
-	
-	/**
-	 * @param point the object to be compared.
-	 * @return :
-	 * 0 if the point is equal to the current
-	 * 1 if this point is greater
-	 * -1 if this point is lower
-	 */
-	@Override
-	public int compareTo(@NotNull Point point) {
-		for (int i = 0; i < this.coordinates.size(); i++) {
-			if (this.coordinates.get(i) < point.coordinates.get(i)) {
-				return -1;
-			} else if (this.coordinates.get(i) > point.coordinates.get(i)) {
-				return 1;
-			}
-		}
-		return 0;
-	}
+	/* Writable implementation */
 	
 	/**
 	 * @param dataOutput
@@ -73,7 +63,8 @@ public class Point implements WritableComparable<Point> {
 	@Override
 	public void readFields(DataInput dataInput) throws IOException {
 		this.coordinates = new ArrayList<>();
-		for (int i = 0; i < dataInput.readInt(); i++) {
+		int size = dataInput.readInt();
+		for (int i = 0; i < size; i++) {
 			double value = dataInput.readDouble();
 			this.coordinates.add(value);
 		}
@@ -118,5 +109,11 @@ public class Point implements WritableComparable<Point> {
 	
 	public int getInstances() {
 		return instances;
+	}
+
+	public String toString(){
+		return this.coordinates.stream()
+				.map(Object::toString)
+				.collect(Collectors.joining(" "));
 	}
 }

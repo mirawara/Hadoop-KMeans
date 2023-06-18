@@ -6,10 +6,11 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 
-public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
+import static it.unipi.hadoop.KMeansUtil.readCentroidsFromConfiguration;
+
+public class KMeansMapper extends Mapper<Object, Text, IntWritable, Point> {
 
 	private static ArrayList<Centroid> centroids;
 
@@ -42,7 +43,7 @@ public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
 			System.out.println("Error: centroid_id is null");
 			return;
 		}
-		context.write(centroids.get(centroid_id.get()), point);
+		context.write(centroid_id, point);
 	}
 
 	/**
@@ -52,17 +53,8 @@ public class KMeansMapper extends Mapper<Object, Text, Centroid, Point> {
 	@Override
 	protected void setup(Context context) throws IOException, InterruptedException {
 
-		// Read centroids returned from previous iteration inside the distributed cache
-		URI[] cacheFiles = context.getCacheFiles();
-		if (cacheFiles != null && cacheFiles.length > 0) {
-			// Read the centroids from the cached file
-			centroids = KMeansUtil.readCentroids(cacheFiles[0].getPath());
-			return;
-		}
-		// If we are in the first iteration no centroids will be found, get random ones
 		super.setup(context);
-		String inputPath = context.getConfiguration().get("centroidPath");
-		centroids = KMeansUtil.readCentroids(inputPath);
+		centroids = readCentroidsFromConfiguration(context.getConfiguration());
 	}
 }
 
