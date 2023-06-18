@@ -94,15 +94,18 @@ public class KMeans {
 
             fs.delete(outputPath, true);
 
-            Job job = KMeansUtil.configureJob(conf, inputPath, outputPath, numReducers, iteration);
-            if (job == null) {
-                System.err.println("Error in Job configuration");
-                System.exit(1);
-            }
+            try (Job job = KMeansUtil.configureJob(conf, inputPath, outputPath, numReducers, iteration)) {
+                if (job == null) {
+                    System.err.println("Error in Job configuration");
+                    System.exit(1);
+                }
+                if (!job.waitForCompletion(true)) {
+                    System.err.println("Error during Job execution");
+                    System.exit(1);
+                }
 
-            if (!job.waitForCompletion(true)) {
-                System.err.println("Error during Job execution");
-                System.exit(1);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
             if (numReducers > 1) {
@@ -114,7 +117,7 @@ public class KMeans {
             // Read current centroids
             String currentCentroidFile = outputPath + KMeansUtil.OUTPUT_NAME + iteration;
             ArrayList<Centroid> currentCentroids=readCentroids(currentCentroidFile, conf, false);
-            double shift = KMeansUtil.calculateCentroidShift(currentCentroids, conf, iteration);
+            double shift = KMeansUtil.calculateCentroidShift(currentCentroids, conf);
             converged = (shift < KMeansUtil.DEFAULT_THRESHOLD);
             if (!converged) {
                 conf.setStrings("centroids", readCentroids(currentCentroidFile, conf, false).stream()
