@@ -106,6 +106,7 @@ public class KMeans {
             centroids2.add(new Centroid(i, Arrays.stream(centroidStrings[i].split(" "))
                     .map(Double::parseDouble)
                     .collect(Collectors.toCollection(ArrayList::new))));
+        }
 
         boolean converged = false;
         int iteration = 0;
