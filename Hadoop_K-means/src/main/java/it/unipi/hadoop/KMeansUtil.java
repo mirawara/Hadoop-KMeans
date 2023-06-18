@@ -18,6 +18,8 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class KMeansUtil {
 
@@ -43,11 +45,8 @@ public class KMeansUtil {
             job.setOutputKeyClass(IntWritable.class);
             job.setOutputValueClass(Text.class);
             FileInputFormat.addInputPath(job, inputPath);
-
-            if (iteration > 1) {
-                FileSystem.get(conf).delete(new Path(outputPath, OUTPUT_NAME + (iteration - 2)), true);
-            }
             FileOutputFormat.setOutputPath(job, outputPath);
+
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -71,11 +70,25 @@ public class KMeansUtil {
         out.close();
     }
 
-    public static double calculateCentroidShift(String previousCentroidFile, ArrayList<Centroid> currentCentroids)
+    public static ArrayList<Centroid> readCentroidsFromConfiguration(Configuration conf){
+
+        ArrayList<Centroid> centroids=new ArrayList<>();
+
+        String[] centroidStrings = conf.getStrings("centroids");
+        // Get the values of the centroids
+        for (int i = 0; i < centroidStrings.length; i++) {
+            centroids.add(new Centroid(i, Arrays.stream(centroidStrings[i].split(" "))
+                    .map(Double::parseDouble)
+                    .collect(Collectors.toCollection(ArrayList::new))));
+        }
+        return centroids;
+    }
+
+    public static double calculateCentroidShift(ArrayList<Centroid> currentCentroids, Configuration conf, int iteration)
             throws IOException {
 
         // Read previous centroids
-        ArrayList<Centroid> previousCentroids = KMeans.readCentroids(previousCentroidFile);
+        ArrayList<Centroid> previousCentroids = readCentroidsFromConfiguration(conf);
 
         // Calculate centroid shift
         double shift = 0.0;
@@ -89,8 +102,4 @@ public class KMeansUtil {
         return shift;
     }
 
-    public static void cleanup(int iteration, FileSystem fs, Path outputPath) throws IOException {
-        fs.delete(new Path(outputPath, OUTPUT_NAME + (iteration - 2)), true);
-        fs.delete(new Path(outputPath, OUTPUT_NAME + (iteration - 1)), true);
-    }
 }

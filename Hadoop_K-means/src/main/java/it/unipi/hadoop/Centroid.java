@@ -20,7 +20,7 @@ public class Centroid implements WritableComparable<Centroid> {
 
     public Centroid(int centroid_id, ArrayList<Double> coords){
         this.centroid_id = new IntWritable(centroid_id);
-        this.point=new Point(coords,1);
+        this.point=new Point(coords);
     }
     public  Centroid(){
         this.centroid_id=new IntWritable();

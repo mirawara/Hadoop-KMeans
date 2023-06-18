@@ -21,9 +21,9 @@ public class Point implements Writable {
 	 *
 	 * @param coordinates_ Coordinates of the new point
 	 */
-	public Point(ArrayList<Double> coordinates_,int instances) {
+	public Point(ArrayList<Double> coordinates_) {
 		this.coordinates = coordinates_;
-		this.instances = instances;
+		this.instances = 1;
 	}
 
 	public Point(){
