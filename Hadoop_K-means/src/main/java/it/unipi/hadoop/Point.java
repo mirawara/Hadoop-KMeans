@@ -114,6 +114,6 @@ public class Point implements Writable {
 	public String toString(){
 		return this.coordinates.stream()
 				.map(Object::toString)
-				.collect(Collectors.joining(","));
+				.collect(Collectors.joining(" "));
 	}
 }

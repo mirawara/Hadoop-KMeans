@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -97,6 +98,14 @@ public class KMeans {
                 .map(centroid -> centroid.getPoint().toString())
                 .toArray(String[]::new));
 
+        ArrayList<Centroid> centroids2=new ArrayList<>();
+        String[] centroidStrings = conf.getStrings("centroids");
+        // Get the values of the centroids
+        for (int i = 0; i < centroidStrings.length; i++) {
+            System.out.println(centroidStrings[i]);
+            centroids2.add(new Centroid(i, Arrays.stream(centroidStrings[i].split(" "))
+                    .map(Double::parseDouble)
+                    .collect(Collectors.toCollection(ArrayList::new))));
 
         boolean converged = false;
         int iteration = 0;
@@ -114,6 +123,7 @@ public class KMeans {
                 System.err.println("Error during Job execution");
                 System.exit(1);
             }
+            System.exit(1);
 
             if (numReducers > 1) {
                 KMeansUtil.mergeOutput(conf, outputPath, iteration);

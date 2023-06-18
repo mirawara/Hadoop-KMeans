@@ -58,7 +58,7 @@ public class KMeansMapper extends Mapper<Object, Text, IntWritable, Point> {
         String[] centroidStrings = context.getConfiguration().getStrings("centroids");
         // Get the values of the centroids
         for (int i = 0; i < centroidStrings.length; i++) {
-            centroids.add(new Centroid(i, Arrays.stream(centroidStrings[i].split(","))
+            centroids.add(new Centroid(i, Arrays.stream(centroidStrings[i].split(" "))
                     .map(Double::parseDouble)
                     .collect(Collectors.toCollection(ArrayList::new))));
         }
