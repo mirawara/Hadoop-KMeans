@@ -3,8 +3,6 @@ package it.unipi.hadoop;
 import com.sun.istack.NotNull;
 import org.apache.hadoop.io.Writable;
 
-import javax.xml.crypto.Data;
-import java.awt.dnd.DropTarget;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -101,10 +99,6 @@ public class Point implements Writable {
 	
 	public ArrayList<Double> getCoordinates() {
 		return coordinates;
-	}
-	
-	public void setCoordinates(ArrayList<Double> coordinates) {
-		this.coordinates = coordinates;
 	}
 	
 	public int getInstances() {
