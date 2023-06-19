@@ -106,9 +106,12 @@ public class KMeans {
                 e.printStackTrace();
             }
 
+
+            //TODO: non conviene fare il merge ma utilizzare un metodo per leggere i file dei reducer (più efficiente e anche più semplice)
             if (numReducers > 1) {
                 KMeansUtil.mergeOutput(conf, outputPath, iteration);
             } else {
+                //TODO: togliere il renaming perché abbiamo già il log, è solo una perdita di tempo
                 fs.rename(new Path(outputPath + "/part-r-00000"), new Path(outputPath + KMeansUtil.OUTPUT_NAME + iteration));
             }
 
@@ -127,6 +130,7 @@ public class KMeans {
                 e.printStackTrace();
             }
 
+            //TODO: utilizzare currentCentroids invece di riprenderli dal file
             if (!converged) {
                 conf.setStrings("centroids", readCentroids(currentCentroidFile, conf, false).stream()
                         .map(centroid -> centroid.getPoint().toString())
