@@ -22,7 +22,7 @@ public class KMeansUtil {
 
 	public static final int DEFAULT_NUM_REDUCERS = 1;
 	public static final double DEFAULT_THRESHOLD = 0.001;
-	public static final int DEFAULT_MAX_ITERATIONS = 10;
+	public static final int DEFAULT_MAX_ITERATIONS = 20;
 
 	public static final String OUTPUT_NAME = "/output_centroids";
 

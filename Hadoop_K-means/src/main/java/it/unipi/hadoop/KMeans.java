@@ -6,9 +6,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -119,6 +117,16 @@ public class KMeans {
             ArrayList<Centroid> currentCentroids=readCentroids(currentCentroidFile, conf, false);
             double shift = KMeansUtil.calculateCentroidShift(currentCentroids, conf);
             converged = (shift < KMeansUtil.DEFAULT_THRESHOLD);
+
+            try (FileWriter fw = new FileWriter("map_reduce_log.txt", true);
+                 BufferedWriter bw = new BufferedWriter(fw);
+                 PrintWriter out = new PrintWriter(bw)) {
+                out.println("MapReduce Iteration: " + iteration + ", Shift Value: " + shift + ", Converge Threshold: " + KMeansUtil.DEFAULT_THRESHOLD);
+            } catch (IOException e) {
+                System.err.println("Error during the write on the MapReduce log file");
+                e.printStackTrace();
+            }
+
             if (!converged) {
                 conf.setStrings("centroids", readCentroids(currentCentroidFile, conf, false).stream()
                         .map(centroid -> centroid.getPoint().toString())
