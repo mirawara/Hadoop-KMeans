@@ -101,10 +101,6 @@ public class Point implements Writable {
 		return coordinates;
 	}
 	
-//	public void setCoordinates(ArrayList<Double> coordinates) {
-//		this.coordinates = coordinates;
-//	}
-	
 	public int getInstances() {
 		return instances;
 	}

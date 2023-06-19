@@ -52,10 +52,6 @@ public class Centroid implements WritableComparable<Centroid> {
         return centroid_id;
     }
 
-//    public void setCentroid_id(IntWritable centroid_id) {
-//        this.centroid_id = centroid_id;
-//    }
-
     @Override
     public int compareTo(Centroid other) {
         // Confronta gli ID dei centroidi
