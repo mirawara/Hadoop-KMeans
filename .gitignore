@@ -1,4 +1,4 @@
 Hadoop_K-means/.idea/vcs.xml
 scripts/.idea/
-scripts/data/
+scripts/data/*
 .idea/
