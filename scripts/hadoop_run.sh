@@ -85,3 +85,5 @@ if [ $num_reducers -gt 2 ]; then
     ssh hadoop@hadoop-namenode "rm output/part-r-00002"
 fi
 
+python convert_to_csv.py $test
+python compute_silhouette_index.py $test
