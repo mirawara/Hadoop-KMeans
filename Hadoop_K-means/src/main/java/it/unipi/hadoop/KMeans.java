@@ -8,9 +8,20 @@ import org.apache.hadoop.mapreduce.Job;
 import java.io.IOException;
 import java.util.ArrayList;
 
-
+/**
+ * A class that implements the K-means algorithm using Hadoop MapReduce.
+ */
 public class KMeans {
 
+	/**
+	 * Performs iterations of the K-means algorithm using the specified configuration, input path,
+	 * number of reducers, and output path.
+	 *
+	 * @param conf         The Hadoop configuration.
+	 * @param outputPath   The output path for storing the results.
+	 * @param inputPath    The input path containing the data points.
+	 * @param numReducers  The number of reducers to use in the MapReduce job.
+	 */
 	private static void KMeansIterations(Configuration conf, Path outputPath, Path inputPath, int numReducers) {
 
 		// Get configuration file
@@ -81,6 +92,11 @@ public class KMeans {
 		}
 	}
 
+	/**
+	 * The main entry point for the K-means program.
+	 *
+	 * @param args The command-line arguments. Expects <inputPath> <outputPath> <centroidPath> [<numReducers>].
+	 */
 	public static void main(String[] args) {
 		if (args.length < 3 || args.length > 4) {
 			System.err.println("Usage: KMeansMain <inputPath> <outputPath> <centroidPath> [<numReducers>]");
