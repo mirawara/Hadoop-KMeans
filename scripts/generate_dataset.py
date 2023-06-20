@@ -8,10 +8,10 @@ import random
 
 
 dimension = 3        # d
-samples = 10000        # n
+samples = 10000      # n
 centers = 3          # k
 
-points, y = make_blobs(n_samples = samples, centers = centers, n_features = dimension, random_state = 1, cluster_std = 1.5, shuffle = True)
+points, y = make_blobs(n_samples = samples, centers = centers, n_features = dimension, random_state = 1, cluster_std = 1.2, shuffle = True)
 
 df = DataFrame(dict(a=points[:,0], b=points[:,1], c=points[:,2]))
 
