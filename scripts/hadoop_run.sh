@@ -47,15 +47,41 @@ else
     exit 1
 fi
 
+# generate dataset for the specific test
 python generate_dataset.py $n $d $k $test
 
+# move dataset on the remote machine 
 scp data/$test/dataset_test.csv hadoop@hadoop-namenode:~/data/
 scp data/$test/centroids_test.csv hadoop@hadoop-namenode:~/data/
 
+# put the dataset on hdfs
 ssh hadoop@hadoop-namenode "/opt/hadoop/bin/hadoop fs -put -f data/centroids_test.csv kmeansinput/centroids_test.csv"
 ssh hadoop@hadoop-namenode "/opt/hadoop/bin/hadoop fs -put -f data/dataset_test.csv kmeansinput/dataset_test.csv"
 
+# start of the mapreduce
 ssh hadoop@hadoop-namenode "/opt/hadoop/bin/hadoop jar Hadoop_K-means-1.0-SNAPSHOT.jar it.unipi.hadoop.KMeans kmeansinput/dataset_test.csv output/ kmeansinput/centroids_test.csv $num_reducers"
 
+# get of the log from the remote machine
 scp hadoop@hadoop-namenode:~/map_reduce_log.txt data/$test/map_reduce_log.txt 
 ssh hadoop@hadoop-namenode "rm map_reduce_log.txt"
+
+# get of the output files from the remote machine
+if [ $num_reducers -gt 0 ]; then
+    ssh hadoop@hadoop-namenode "/opt/hadoop/bin/hadoop fs -get /user/hadoop/output/part-r-00000 output"
+    scp hadoop@hadoop-namenode:~/output/part-r-00000 data/$test/part-r-00000
+    ssh hadoop@hadoop-namenode "rm output/part-r-00000"
+
+fi
+
+if [ $num_reducers -gt 1 ]; then
+    ssh hadoop@hadoop-namenode "/opt/hadoop/bin/hadoop fs -get /user/hadoop/output/part-r-00001 output"
+    scp hadoop@hadoop-namenode:~/output/part-r-00001 data/$test/part-r-00001 
+    ssh hadoop@hadoop-namenode "rm output/part-r-00001"
+fi
+
+if [ $num_reducers -gt 2 ]; then
+    ssh hadoop@hadoop-namenode "/opt/hadoop/bin/hadoop fs -get /user/hadoop/output/part-r-00002 output"
+    scp hadoop@hadoop-namenode:~/output/part-r-00002 data/$test/part-r-00002
+    ssh hadoop@hadoop-namenode "rm output/part-r-00002"
+fi
+
