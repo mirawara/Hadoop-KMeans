@@ -162,11 +162,15 @@ public class KMeansUtil {
                 .toArray(String[]::new));
     }
 
-    public static void logIterationInfo(int iteration, double shift) throws IOException {
-        FileWriter fw = new FileWriter("map_reduce_log.txt", true);
-        BufferedWriter bw = new BufferedWriter(fw);
-        PrintWriter out = new PrintWriter(bw);
-        out.println("MapReduce Iteration: " + iteration + ", Shift Value: " + shift + ", Converge Threshold: " + DEFAULT_THRESHOLD);
+    public static void logIterationInfo(int iteration, double shift, int numReducers) {
+        try (FileWriter fw = new FileWriter("map_reduce_log.txt", true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+            out.println("Iteration: " + iteration + ", Shift Value: " + shift + ", Converge Threshold: " + DEFAULT_THRESHOLD + "Reduce Number: "+numReducers);
+        } catch (IOException e) {
+            System.err.println("Error during the write on the MapReduce log file");
+            e.printStackTrace();
+        }
     }
 
 }
