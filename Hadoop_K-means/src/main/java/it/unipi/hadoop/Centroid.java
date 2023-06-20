@@ -8,23 +8,27 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Represents a centroid in the KMeans algorithm.
+ * Each centroid is associated with a centroid ID and a Point object representing its coordinates.
+ */
 public class Centroid implements WritableComparable<Centroid> {
 
     /**
-     * Object Point representing the centroid
+     * Object Point representing the centroid.
      */
     private Point point;
 
     /**
-     * Centroid id
+     * Centroid ID.
      */
     private final IntWritable centroid_id;
 
     /**
-     * Constructor
+     * Constructor for creating a Centroid object with the given centroid ID and coordinates.
      *
-     * @param centroid_id: the centroid id
-     * @param coords:      array of double representing the centroid's coordinates
+     * @param centroid_id The centroid ID.
+     * @param coords      An ArrayList of Double values representing the centroid's coordinates.
      */
     public Centroid(int centroid_id, ArrayList<Double> coords) {
         this.centroid_id = new IntWritable(centroid_id);
@@ -32,7 +36,8 @@ public class Centroid implements WritableComparable<Centroid> {
     }
 
     /**
-     * Constructor
+     * Default constructor for a Centroid object.
+     * Initializes the centroid ID and Point object to default values.
      */
     public Centroid() {
         this.centroid_id = new IntWritable();
@@ -42,10 +47,10 @@ public class Centroid implements WritableComparable<Centroid> {
     /* WritableComparable implementation */
 
     /**
-     * write method implementation of Writable interface
+     * Writes the Centroid object to a DataOutput stream.
      *
-     * @param dataOutput: output data
-     * @throws IOException: exception in the I/O operation
+     * @param dataOutput The output stream to write the data to.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public void write(DataOutput dataOutput) throws IOException {
@@ -54,11 +59,11 @@ public class Centroid implements WritableComparable<Centroid> {
     }
 
     /**
-     * compareTo method implementation of Comparable interface;
-     * this method is used for sorting the ArrayList of centroids starting from the id
+     * Compares this Centroid object with another Centroid object for sorting purposes.
+     * The comparison is based on the centroid IDs.
      *
-     * @param other: the object to be compared.
-     * @return result of the comparison of the two id
+     * @param other The Centroid object to be compared.
+     * @return A negative integer, zero, or a positive integer if this object is less than, equal to, or greater than the other object.
      */
     @Override
     public int compareTo(Centroid other) {
@@ -66,10 +71,10 @@ public class Centroid implements WritableComparable<Centroid> {
     }
 
     /**
-     * readFields method implementation of Writable interface
+     * Reads the Centroid object from a DataInput stream.
      *
-     * @param dataInput: input data
-     * @throws IOException: exception in the I/O operation
+     * @param dataInput The input stream to read the data from.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public void readFields(DataInput dataInput) throws IOException {
@@ -80,21 +85,27 @@ public class Centroid implements WritableComparable<Centroid> {
     /* Getters and setters */
 
     /**
-     * @return the object Point representing the centroid
+     * Retrieves the Point object representing the centroid.
+     *
+     * @return The Point object representing the centroid.
      */
     public Point getPoint() {
         return point;
     }
 
     /**
-     * @param point: the object Point representing the centroid
+     * Sets the Point object representing the centroid.
+     *
+     * @param point The Point object representing the centroid.
      */
     public void setPoint(Point point) {
         this.point = point;
     }
 
     /**
-     * @return the centroid id
+     * Retrieves the centroid ID.
+     *
+     * @return The centroid ID.
      */
     public IntWritable getCentroid_id() {
         return centroid_id;

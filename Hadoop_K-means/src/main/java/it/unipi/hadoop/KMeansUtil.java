@@ -17,14 +17,22 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
+/**
+ * Utility class for the KMeans algorithm.
+ * Provides various helper methods for reading centroids, configuring jobs, calculating centroid shifts, etc.
+ */
 public class KMeansUtil {
 
     public static final int DEFAULT_NUM_REDUCERS = 1;
     public static final double DEFAULT_THRESHOLD = 0.001;
     public static final int DEFAULT_MAX_ITERATIONS = 20;
 
-    public static final String OUTPUT_NAME = "/output_centroids";
-
+    /**
+     * Generates a Centroid object from an array of strings.
+     *
+     * @param fields The array of strings to be parsed.
+     * @return The generated Centroid object.
+     */
     private static Centroid generateCentroidFromArray(String[] fields) {
         Centroid centroid = new Centroid();
 
@@ -42,6 +50,14 @@ public class KMeansUtil {
         return centroid;
     }
 
+    /**
+     * Reads centroids from multiple files in a directory.
+     *
+     * @param conf    The Hadoop configuration.
+     * @param dirPath The directory path containing the centroid files.
+     * @return An ArrayList of Centroid objects read from the files.
+     * @throws IOException If an I/O error occurs during file reading.
+     */
     public static ArrayList<Centroid> readCentroidFromMultipleFiles(Configuration conf, Path dirPath) throws IOException {
 
         ArrayList<Centroid> centroids = new ArrayList<>();
@@ -65,11 +81,13 @@ public class KMeansUtil {
 
 
     /**
-     * Extract the centroids from file
+     * Reads centroids from a file.
      *
-     * @param pathString path to the file that contains the centroids
-     * @return ArrayList of Centroid objects
-     * @throws IOException if an I/O error occurs during file reading
+     * @param pathString The path to the file that contains the centroids.
+     * @param conf       The Hadoop configuration.
+     * @param csvReading Flag indicating whether the file is in CSV format.
+     * @return An ArrayList of Centroid objects read from the file.
+     * @throws IOException If an I/O error occurs during file reading.
      */
     public static ArrayList<Centroid> readCentroids(String pathString, Configuration conf, boolean csvReading) throws IOException {
         ArrayList<Centroid> centroids = new ArrayList<>();
@@ -92,10 +110,19 @@ public class KMeansUtil {
         }
 
         in.close();
-        //Collections.sort(centroids);
         return centroids;
     }
 
+    /**
+     * Configures a MapReduce job for K-Means iteration.
+     *
+     * @param conf        The Hadoop configuration.
+     * @param inputPath   The input path for the MapReduce job.
+     * @param outputPath  The output path for the MapReduce job.
+     * @param numReducers The number of reducers for the MapReduce job.
+     * @param iteration   The current iteration number.
+     * @return The configured MapReduce job.
+     */
     public static Job configureJob(Configuration conf, Path inputPath, Path outputPath, int numReducers, int iteration) {
         Job job;
         try {
@@ -120,7 +147,12 @@ public class KMeansUtil {
         return job;
     }
 
-
+    /**
+     * Reads centroids from the Hadoop configuration.
+     *
+     * @param conf The Hadoop configuration.
+     * @return An ArrayList of Centroid objects read from the configuration.
+     */
     public static ArrayList<Centroid> readCentroidsFromConfiguration(Configuration conf) {
 
         ArrayList<Centroid> centroids = new ArrayList<>();
@@ -135,6 +167,13 @@ public class KMeansUtil {
         return centroids;
     }
 
+    /**
+     * Calculates the shift of centroids between current and previous iterations.
+     *
+     * @param currentCentroids The centroids of the current iteration.
+     * @param conf             The Hadoop configuration.
+     * @return The calculated centroid shift.
+     */
     public static double calculateCentroidShift(ArrayList<Centroid> currentCentroids, Configuration conf) {
 
         // Read previous centroids
@@ -154,6 +193,13 @@ public class KMeansUtil {
         return shift;
     }
 
+    /**
+     * Sets the centroids to the Hadoop configuration.
+     *
+     * @param key       The key for storing the centroids in the configuration.
+     * @param centroids The centroids to be set in the configuration.
+     * @param conf      The Hadoop configuration.
+     */
     public static void setCentroidsToConf(String key, ArrayList<Centroid> centroids, Configuration conf) {
         //[centroid.getPoint().toString() for centroid in centroids]
         //Per ogni centroide nella lista di centroidi mi prendo la stringa delle coordinate del punto
@@ -162,11 +208,18 @@ public class KMeansUtil {
                 .toArray(String[]::new));
     }
 
+    /**
+     * Logs iteration information to a log file.
+     *
+     * @param iteration   The current iteration number.
+     * @param shift       The centroid shift value.
+     * @param numReducers The number of reducers used in the iteration.
+     */
     public static void logIterationInfo(int iteration, double shift, int numReducers) {
         try (FileWriter fw = new FileWriter("map_reduce_log.txt", true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
-            out.println("Iteration: " + iteration + ", Shift Value: " + shift + ", Converge Threshold: " + DEFAULT_THRESHOLD + "Reduce Number: "+numReducers);
+            out.println("Iteration: " + iteration + ", Shift Value: " + shift + ", Converge Threshold: " + DEFAULT_THRESHOLD + "Reduce Number: " + numReducers);
         } catch (IOException e) {
             System.err.println("Error during the write on the MapReduce log file");
             e.printStackTrace();

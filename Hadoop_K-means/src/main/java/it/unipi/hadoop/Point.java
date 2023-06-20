@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a point in the KMeans algorithm.
+ * Each point is characterized by its coordinates and can perform various operations such as distance calculation, addition, and averaging.
+ */
 public class Point implements Writable {
 
     /**
@@ -23,9 +27,9 @@ public class Point implements Writable {
     private int instances;
 
     /**
-     * Constructor
+     * Constructor for creating a Point object with the given coordinates.
      *
-     * @param coordinates_ Coordinates of the new point
+     * @param coordinates_ Coordinates of the new point.
      */
     public Point(ArrayList<Double> coordinates_) {
         this.coordinates = coordinates_;
@@ -33,7 +37,8 @@ public class Point implements Writable {
     }
 
     /**
-     * Constructor
+     * Default constructor for a Point object.
+     * Initializes the coordinates to an empty ArrayList and the instances to 1.
      */
     public Point() {
         this.coordinates = new ArrayList<>();
@@ -41,10 +46,10 @@ public class Point implements Writable {
     }
 
     /**
-     * Constructor
+     * Constructor for creating a Point object from a comma-separated string representation.
      *
-     * @param text: Text input to the map function
-     * @throws NullPointerException: in the case text is null
+     * @param text The input text representing the coordinates.
+     * @throws NullPointerException If the text is null.
      */
     public Point(String text) throws NullPointerException {
         String[] c = text.split(",");
@@ -58,8 +63,10 @@ public class Point implements Writable {
     /* Writable implementation */
 
     /**
-     * @param dataOutput: output data
-     * @throws IOException: exception in the I/O operation
+     * Writes the Point object to a DataOutput stream.
+     *
+     * @param dataOutput The output stream to write the data to.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public void write(DataOutput dataOutput) throws IOException {
@@ -71,8 +78,10 @@ public class Point implements Writable {
     }
 
     /**
-     * @param dataInput: input data
-     * @throws IOException: exception in the I/O operation
+     * Reads the Point object from a DataInput stream.
+     *
+     * @param dataInput The input stream to read the data from.
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public void readFields(DataInput dataInput) throws IOException {
@@ -87,10 +96,13 @@ public class Point implements Writable {
 
     /* Operations on points */
 
+    /* Operations on points */
+
     /**
-     * It calculates the Euclidean distance between two points
+     * Calculates the Euclidean distance between two points.
      *
-     * @param point: the point from which you want to calculate the distance
+     * @param point The point from which you want to calculate the distance.
+     * @return The Euclidean distance between the two points.
      */
     public double getDistance(@NotNull Point point) {
         double sum = 0;
@@ -102,9 +114,9 @@ public class Point implements Writable {
     }
 
     /**
-     * It adds two points, coordinate by coordinate
+     * Adds two points coordinate by coordinate.
      *
-     * @param point: the point to be added to the current one
+     * @param point The point to be added to the current one.
      */
     public void add(Point point) {
         for (int i = 0; i < this.coordinates.size(); i++) {
@@ -114,7 +126,8 @@ public class Point implements Writable {
     }
 
     /**
-     * It calculates the average of the points sum
+     * Calculates the average of the points' sum.
+     * Divides each coordinate by the number of instances.
      */
     public void average() {
         this.coordinates.replaceAll(aDouble -> aDouble / this.instances);
@@ -124,21 +137,27 @@ public class Point implements Writable {
     /* Getters and setters */
 
     /**
-     * @return the ArrayList of doubles representing the coordinates
+     * Retrieves the ArrayList of doubles representing the coordinates.
+     *
+     * @return The ArrayList of doubles representing the coordinates.
      */
     public ArrayList<Double> getCoordinates() {
         return coordinates;
     }
 
     /**
-     * @return the number of instances of the partialSum.
+     * Retrieves the number of instances of the partial sum.
+     *
+     * @return The number of instances of the partial sum.
      */
     public int getInstances() {
         return instances;
     }
 
     /**
-     * @return String representation of the object
+     * Returns a string representation of the Point object.
+     *
+     * @return The string representation of the Point object.
      */
     public String toString() {
         return this.coordinates.stream()
