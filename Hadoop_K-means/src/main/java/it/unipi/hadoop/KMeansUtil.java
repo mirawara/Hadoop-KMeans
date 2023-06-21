@@ -154,16 +154,22 @@ public class KMeansUtil {
      * @return An ArrayList of Centroid objects read from the configuration.
      */
     public static ArrayList<Centroid> readCentroidsFromConfiguration(Configuration conf) {
-
+        
+        // Create an empty list to store the centroids
         ArrayList<Centroid> centroids = new ArrayList<>();
-
+        
+        // Get the string representations of the centroids from the configuration object
         String[] centroidStrings = conf.getStrings("centroids");
-        // Get the values of the centroids
+        // Iterate over all centroid strings
         for (int i = 0; i < centroidStrings.length; i++) {
-            centroids.add(new Centroid(i, Arrays.stream(centroidStrings[i].split(" "))
+            // Convert the string representation of the centroid to a list of doubles
+            ArrayList<Double> coordinates = Arrays.stream(centroidStrings[i].split(" "))
                     .map(Double::parseDouble)
-                    .collect(Collectors.toCollection(ArrayList::new))));
+                    .collect(Collectors.toCollection(ArrayList::new));
+            // Create a new Centroid object and add it to the list
+            centroids.add(new Centroid(i, coordinates));
         }
+        // Return the list of centroids
         return centroids;
     }
 
@@ -175,21 +181,24 @@ public class KMeansUtil {
      * @return The calculated centroid shift.
      */
     public static double calculateCentroidShift(ArrayList<Centroid> currentCentroids, Configuration conf) {
-
-        // Read previous centroids
+        
+        // Read previous centroids from the configuration object
         ArrayList<Centroid> previousCentroids = readCentroidsFromConfiguration(conf);
-        System.out.println(previousCentroids.size());
-
-        // Calculate centroid shift
+        
+        // Initialize the variable to store the total shift of all centroids
         double shift = 0.0;
-
+        
+        // Iterate over all centroids
         for (int i = 0; i < previousCentroids.size(); i++) {
+            // Get the coordinates of the previous and current centroid
             ArrayList<Double> previousCentroidCoord = previousCentroids.get(i).getPoint().getCoordinates();
             ArrayList<Double> currentCentroidCoord = currentCentroids.get(i).getPoint().getCoordinates();
+            // Calculate the shift for each dimension and add it to the total shift
             for (int j = 0; j < previousCentroidCoord.size(); j++) {
                 shift += Math.abs(currentCentroidCoord.get(j) - previousCentroidCoord.get(j));
             }
         }
+        // Return the total shift of all centroids
         return shift;
     }
 
@@ -201,8 +210,8 @@ public class KMeansUtil {
      * @param conf      The Hadoop configuration.
      */
     public static void setCentroidsToConf(String key, ArrayList<Centroid> centroids, Configuration conf) {
-        //[centroid.getPoint().toString() for centroid in centroids]
-        //Per ogni centroide nella lista di centroidi mi prendo la stringa delle coordinate del punto
+        // Set the value of the configuration property specified by `key` to an array of strings
+        // representing the points of all centroids in the `centroids` collection.
         conf.setStrings(key, centroids.stream()
                 .map(centroid -> centroid.getPoint().toString())
                 .toArray(String[]::new));
@@ -216,12 +225,14 @@ public class KMeansUtil {
      * @param numReducers The number of reducers used in the iteration.
      */
     public static void logIterationInfo(int iteration, double shift, int numReducers) {
+        // Use try-with-resources to automatically close the FileWriter, BufferedWriter and PrintWriter
         try (FileWriter fw = new FileWriter("map_reduce_log.txt", true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
-            
+            // Write the iteration information to the log file
             out.println("Iteration: " + iteration + ", Shift Value: " + shift + ", Converge Threshold: " + DEFAULT_THRESHOLD + ", Reduce Number: "+numReducers);
         } catch (IOException e) {
+            // Handle any IOException that may occur
             System.err.println("Error during the write on the MapReduce log file");
             e.printStackTrace();
         }

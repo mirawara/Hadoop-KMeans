@@ -96,8 +96,6 @@ public class Point implements Writable {
 
     /* Operations on points */
 
-    /* Operations on points */
-
     /**
      * Calculates the Euclidean distance between two points.
      *

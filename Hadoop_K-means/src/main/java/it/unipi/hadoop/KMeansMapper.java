@@ -28,24 +28,25 @@ public class KMeansMapper extends Mapper<Object, Text, IntWritable, Point> {
      * @throws IOException          Thrown when an I/O error occurs.
      */
     protected void map(final Object key, final Text value, final Context context) throws InterruptedException, IOException {
-        // Create new point from text
+        // Create a Point object from the input text
         Point point = new Point(value.toString());
-
-        // Initialization
+        
+        // Initialize variables to store the ID of the nearest centroid and the distance to it
         IntWritable centroid_id = null;
         double distanceFromCentroid = Double.MAX_VALUE;
-
-        // Scan for nearest centroid
+        
+        // Iterate over all centroids to find the nearest one
         for (Centroid centroid : centroids) {
-            // Calculate distance between current centroid and the point
+            // Calculate the distance between the current centroid and the point
             double distance = centroid.getPoint().getDistance(point);
-            // If the current centroid is the first tested or is nearer than the previous ones, then save new ID and distance
+            // If this is the first centroid or if it is closer than the previous nearest centroid,
+            // update the nearest centroid ID and distance
             if (centroid_id == null || distance < distanceFromCentroid) {
                 centroid_id = centroid.getCentroid_id();
                 distanceFromCentroid = distance;
             }
         }
-        // Centroid emit
+        // Emit the ID of the nearest centroid and the point
         if (centroid_id == null) {
             System.out.println("Error: centroid_id is null");
             return;
@@ -62,9 +63,12 @@ public class KMeansMapper extends Mapper<Object, Text, IntWritable, Point> {
      */
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
-
+        
+        // Call the superclass setup method
         super.setup(context);
+        // Load the centroids from the Hadoop configuration and store them in the class variable
         centroids = readCentroidsFromConfiguration(context.getConfiguration());
     }
+    
 }
 
