@@ -1,5 +1,8 @@
+path = input('Insert the test to plot: ', 's');
+
 % File CSV di input
-csvFiles = {'data/dataset_test.csv', 'data/centroids_test.csv', 'data/results.csv'};
+basePath = 'data/';
+csvFiles = {strcat(basePath, path, '/dataset_test.csv'), strcat(basePath, path, '/centroids_test.csv'), strcat(basePath, path, '/results.csv')};
 
 % Carica i dati dai file CSV
 data = cell(1, 3);

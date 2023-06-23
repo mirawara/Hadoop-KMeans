@@ -1,142 +1,134 @@
 package it.unipi.hadoop;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
-
+/**
+ * A class that implements the K-means algorithm using Hadoop MapReduce.
+ */
 public class KMeans {
 
-    /**
-     * Extract the centroids from file
-     *
-     * @param pathString path to the file that contains the centroids
-     * @return ArrayList of Centroid objects
-     * @throws IOException if an I/O error occurs during file reading
-     */
-    public static ArrayList<Centroid> readCentroids(String pathString, Configuration conf, boolean csvReading) throws IOException {
-        ArrayList<Centroid> centroids = new ArrayList<>();
-        Path path = new Path(pathString);
-        FileSystem hdfs = FileSystem.get(conf);
-        FSDataInputStream in = hdfs.open(path);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String line;
-
-        while ((line = reader.readLine()) != null) {
-
-            String[] fields = line.split("\\s");
-
-            if(csvReading){
-                fields = line.split(",");
-            }
-
-            // Creare un nuovo oggetto Centroid
-            Centroid centroid = new Centroid();
-
-            // Impostare l'ID del centroide
-            int centroidId = (int) Double.parseDouble(fields[0]);
-            centroid.getCentroid_id().set( centroidId);
-
-            ArrayList<Double> coords =new ArrayList<>();
-            for (int i = 1; i < fields.length; i++) {
-                double value = Double.parseDouble(fields[i]);
-                coords.add(value);
-            }
-            Point point = new Point(coords);
-            centroid.setPoint(point);
-            centroids.add(centroidId,centroid);
-        }
-
-        in.close();
-        Collections.sort(centroids);
-        return centroids;
-    }
-
-
-
-    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-        if (args.length < 3 || args.length > 4) {
-            System.err.println("Usage: KMeansMain <inputPath> <outputPath> <centroidPath> [<numReducers>]");
-            System.exit(1);
-        }
-
-        Path inputPath = new Path(args[0]);
-        Path outputPath = new Path(args[1]);
-        String centroidPath = args[2];
-
-        int numReducers = (args.length == 4) ? Integer.parseInt(args[3]) : KMeansUtil.DEFAULT_NUM_REDUCERS;
-
-
-        Configuration conf = new Configuration();
-        FileSystem fs = FileSystem.get(conf);
-
-        boolean converged = false;
-        int iteration = 0;
-
-        // Set centroids in the configuration
-
-        //[centroid.getPoint().toString() for centroid in centroids]
-        //Per ogni centroide nella lista di centroidi mi prendo la stringa delle coordinate del punto
-        conf.setStrings("centroids", readCentroids(centroidPath,conf, true).stream()
-                .map(centroid -> centroid.getPoint().toString())
-                .toArray(String[]::new));
-
-
-        while (!converged && iteration < KMeansUtil.DEFAULT_MAX_ITERATIONS) {
-
-            fs.delete(outputPath, true);
-
-            try (Job job = KMeansUtil.configureJob(conf, inputPath, outputPath, numReducers, iteration)) {
-                if (job == null) {
-                    System.err.println("Error in Job configuration");
-                    System.exit(1);
-                }
-                if (!job.waitForCompletion(true)) {
-                    System.err.println("Error during Job execution");
-                    System.exit(1);
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            //TODO: non conviene fare il merge ma utilizzare un metodo per leggere i file dei reducer (più efficiente e anche più semplice)
-            if (numReducers > 1) {
-                KMeansUtil.mergeOutput(conf, outputPath, iteration);
-            } else {
-                //TODO: togliere il renaming perché abbiamo già il log, è solo una perdita di tempo
-                fs.rename(new Path(outputPath + "/part-r-00000"), new Path(outputPath + KMeansUtil.OUTPUT_NAME + iteration));
-            }
-
-            // Read current centroids
-            String currentCentroidFile = outputPath + KMeansUtil.OUTPUT_NAME + iteration;
-            ArrayList<Centroid> currentCentroids=readCentroids(currentCentroidFile, conf, false);
-            double shift = KMeansUtil.calculateCentroidShift(currentCentroids, conf);
-            converged = (shift < KMeansUtil.DEFAULT_THRESHOLD);
-
-            try (FileWriter fw = new FileWriter("map_reduce_log.txt", true);
-                 BufferedWriter bw = new BufferedWriter(fw);
-                 PrintWriter out = new PrintWriter(bw)) {
-                out.println("MapReduce Iteration: " + iteration + ", Shift Value: " + shift + ", Converge Threshold: " + KMeansUtil.DEFAULT_THRESHOLD);
-            } catch (IOException e) {
-                System.err.println("Error during the write on the MapReduce log file");
-                e.printStackTrace();
-            }
-
-            //TODO: utilizzare currentCentroids invece di riprenderli dal file
-            if (!converged) {
-                conf.setStrings("centroids", readCentroids(currentCentroidFile, conf, false).stream()
-                        .map(centroid -> centroid.getPoint().toString())
-                        .toArray(String[]::new));
-            }
-            iteration++;
-        }
-    }
+	/**
+	 * Performs iterations of the K-means algorithm using the specified configuration, input path,
+	 * number of reducers, and output path.
+	 *
+	 * @param conf         The Hadoop configuration.
+	 * @param outputPath   The output path for storing the results.
+	 * @param inputPath    The input path containing the data points.
+	 * @param numReducers  The number of reducers to use in the MapReduce job.
+	 */
+	private static void KMeansIterations(Configuration conf, Path outputPath, Path inputPath, int numReducers) {
+		// Get configuration file
+		FileSystem fs = null;
+		try {
+			fs = FileSystem.get(conf);
+		} catch (IOException e) {
+			System.err.println("Error during configuration file reading: " + e.getMessage());
+			System.exit(1);
+		}
+		
+		boolean converged = false;
+		int iteration = 0;
+		
+		while (!converged && iteration < KMeansUtil.DEFAULT_MAX_ITERATIONS) {
+			// Delete output path if it already exists
+			try {
+				fs.delete(outputPath, true);
+			} catch (IOException e) {
+				System.err.println("Error during the deletion of the output file: " + e.getMessage());
+				System.exit(1);
+			}
+			
+			// Job submission
+			try (Job job = KMeansUtil.configureJob(conf, inputPath, outputPath, numReducers, iteration)) {
+				if (job == null) {
+					System.err.println("Error in Job configuration");
+					System.exit(1);
+				}
+				if (!job.waitForCompletion(true)) {
+					System.err.println("Error during Job execution");
+					System.exit(1);
+				}
+				
+			} catch (IOException | InterruptedException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			// Read the current and previous centroids
+			ArrayList<Centroid> currentCentroids = null;
+			try {
+				if (numReducers > 1) {
+					currentCentroids = KMeansUtil.readCentroidFromMultipleFiles(conf, outputPath);
+				} else {
+					String currentCentroidFile = outputPath + "/part-r-00000";
+					currentCentroids = KMeansUtil.readCentroids(currentCentroidFile, conf, false);
+				}
+			} catch (IOException e) {
+				System.err.println("Error during the reading of the current centroids: " + e.getMessage());
+				System.exit(1);
+			}
+			
+			// Calculate the shift
+			double shift = KMeansUtil.calculateCentroidShift(currentCentroids, conf);
+			
+			// Check if converged
+			converged = (shift < KMeansUtil.DEFAULT_THRESHOLD);
+			
+			// Log the status
+			KMeansUtil.logIterationInfo(iteration, shift, numReducers);
+			if (!converged) {
+				KMeansUtil.setCentroidsToConf("centroids", currentCentroids, conf);
+			}
+			
+			iteration++;
+		}
+	}
+	
+	
+	/**
+	 * The main entry point for the K-means program.
+	 *
+	 * @param args The command-line arguments. Expects `inputPath` `outputPath` `centroidPath` [`numReducers`].
+	 */
+	public static void main(String[] args) {
+		// Check if the number of arguments is valid
+		if (args.length < 3 || args.length > 4) {
+			System.err.println("Usage: KMeansMain <inputPath> <outputPath> <centroidPath> [<numReducers>]");
+			System.exit(1);
+		}
+		
+		Path inputPath = null;
+		Path outputPath = null;
+		String centroidPath = null;
+		int numReducers = 1;
+		
+		// Parse the arguments
+		try {
+			inputPath = new Path(args[0]);
+			outputPath = new Path(args[1]);
+			centroidPath = args[2];
+			numReducers = (args.length == 4) ? Integer.parseInt(args[3]) : KMeansUtil.DEFAULT_NUM_REDUCERS;
+		} catch (IllegalArgumentException e) {
+			System.err.println("Error during the parsing of the arguments: " + e.getMessage());
+			System.exit(1);
+		}
+		
+		Configuration conf = new Configuration();
+		
+		// Set initial centroids in the configuration
+		try {
+			KMeansUtil.setCentroidsToConf("centroids", KMeansUtil.readCentroids(centroidPath, conf, true), conf);
+		} catch (IOException e) {
+			System.err.println("Error during the reading of the centroids: " + e.getMessage());
+			System.exit(1);
+		}
+		
+		// Run KMeans iterations
+		KMeansIterations(conf, outputPath, inputPath, numReducers);
+	}
 }
