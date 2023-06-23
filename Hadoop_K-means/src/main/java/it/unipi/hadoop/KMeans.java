@@ -93,7 +93,7 @@ public class KMeans {
 	/**
 	 * The main entry point for the K-means program.
 	 *
-	 * @param args The command-line arguments. Expects <inputPath> <outputPath> <centroidPath> [<numReducers>].
+	 * @param args The command-line arguments. Expects `inputPath` `outputPath` `centroidPath` [`numReducers`].
 	 */
 	public static void main(String[] args) {
 		// Check if the number of arguments is valid
