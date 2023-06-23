@@ -36,10 +36,10 @@ public class KMeansUtil {
     private static Centroid generateCentroidFromArray(String[] fields) {
         Centroid centroid = new Centroid();
 
-        // Impostare l'ID del centroide
+        // Set centroid ID
         int centroidId = (int) Double.parseDouble(fields[0]);
         centroid.getCentroid_id().set(centroidId);
-
+        
         ArrayList<Double> coords = new ArrayList<>();
         for (int i = 1; i < fields.length; i++) {
             double value = Double.parseDouble(fields[i]);
