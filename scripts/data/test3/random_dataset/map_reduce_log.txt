@@ -1,0 +1,10 @@
+Iteration: 0, Shift Value: 2.046468518147686, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 1, Shift Value: 0.6214625726682784, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 2, Shift Value: 0.0, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 0, Shift Value: 1.2649316957642245, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 1, Shift Value: 1.384647105776928, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 2, Shift Value: 0.8512151399098247, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 3, Shift Value: 0.4203168808957658, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 4, Shift Value: 0.0, Converge Threshold: 0.001, Reduce Number: 2
+
+Silhouette Score: 0.6696753429180952

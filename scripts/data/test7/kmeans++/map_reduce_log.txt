@@ -1,0 +1,4 @@
+Iteration: 0, Shift Value: 5.151362795738299, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 1, Shift Value: 0.0, Converge Threshold: 0.001, Reduce Number: 2
+
+Silhouette Score: 0.7469265908144094

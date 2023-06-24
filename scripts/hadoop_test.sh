@@ -6,10 +6,15 @@ fi
 
 num_reducers="$1"
 
-#./hadoop_run.sh test1 $num_reducers
-#./hadoop_run.sh test1 $num_reducers
+#for i in $(seq 7 7)
+#do
+#    test="test$i"
+#    ./hadoop_run.sh $test $num_reducers
+#done
+
+
+./hadoop_run.sh test1 $num_reducers
+./hadoop_run.sh test2 $num_reducers
 ./hadoop_run.sh test3 $num_reducers
 ./hadoop_run.sh test4 $num_reducers
-./hadoop_run.sh test5 $num_reducers
 ./hadoop_run.sh test6 $num_reducers
-./hadoop_run.sh test7 $num_reducers

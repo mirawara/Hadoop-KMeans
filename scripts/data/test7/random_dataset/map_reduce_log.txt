@@ -1,0 +1,23 @@
+Iteration: 6, Shift Value: 18.886660519582435, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 0, Shift Value: 12.631711405493556, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 1, Shift Value: 10.973488866579226, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 2, Shift Value: 11.403386795357031, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 3, Shift Value: 9.47296739212521, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 4, Shift Value: 10.096348571153495, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 5, Shift Value: 7.788289573326027, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 6, Shift Value: 9.445229739484827, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 7, Shift Value: 10.88270281126981, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 8, Shift Value: 13.015801842085777, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 9, Shift Value: 10.800735766040825, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 10, Shift Value: 7.693816186678086, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 11, Shift Value: 9.968382224338164, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 12, Shift Value: 12.75008170697187, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 13, Shift Value: 7.893360119986091, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 14, Shift Value: 7.788726208676692, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 15, Shift Value: 14.778069353229, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 16, Shift Value: 14.815328067823824, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 17, Shift Value: 11.788146616257784, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 18, Shift Value: 14.234544163360212, Converge Threshold: 0.001, Reduce Number: 2
+Iteration: 19, Shift Value: 13.102632205520214, Converge Threshold: 0.001, Reduce Number: 2
+
+Silhouette Score: 0.4575820224967407

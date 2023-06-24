@@ -39,9 +39,9 @@ elif [ "$test" = "test6" ]; then
     n=10000
     k=5
 elif [ "$test" = "test7" ]; then
-    d=30
-    n=100000
-    k=25
+    d=15
+    n=50000
+    k=10
 else
     echo "Invalid test value."
     exit 1

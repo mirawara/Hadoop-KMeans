@@ -1,7 +1,7 @@
 import sys
 from sklearn.datasets import make_blobs
 import pandas as pd
-import random
+from sklearn.cluster import KMeans
 
 if len(sys.argv) != 5:
     print("Usage: python script.py <n> <d> <k> <folder_name>")
@@ -20,11 +20,12 @@ df = df.apply(lambda x: (x - x.min()) / (x.max() - x.min()))
 
 df.to_csv(f'data/{folder_name}/dataset_test.csv', index=False, header=False)
 
-centroids = pd.DataFrame(columns=["id"] + list(range(dimension)))
-for i in range(0, centers):
-    n = random.randint(0, samples)
-    chosen_point = df.loc[n]
-    new_row = pd.DataFrame({'id': [i], **{j: [chosen_point[j]] for j in range(dimension)}})
-    centroids = pd.concat([centroids, new_row], ignore_index=True)
+centroids = df.sample(n=centers)
+centroids.index = range(centers)
 
-centroids.to_csv(f'data/{folder_name}/centroids_test.csv', index=False, header=False)
+#kmeans = KMeans(n_clusters=centers, init='k-means++', n_init=1)
+#kmeans.fit(df)
+#centroids = pd.DataFrame(kmeans.cluster_centers_)
+#centroids.index = range(centers)
+
+centroids.to_csv(f'data/{folder_name}/centroids_test.csv', index=True, header=False)
