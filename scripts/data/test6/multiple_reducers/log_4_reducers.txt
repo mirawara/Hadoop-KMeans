@@ -1,0 +1,12 @@
+2023-06-24 09:10:02,105 INFO mapreduce.Job: The url to track the job: http://hadoop-namenode:8088/proxy/application_1686760829182_0801/
+2023-06-24 09:10:02,105 INFO mapreduce.Job: Running job: job_1686760829182_0801
+2023-06-24 09:10:08,216 INFO mapreduce.Job: Job job_1686760829182_0801 running in uber mode : false
+2023-06-24 09:10:08,220 INFO mapreduce.Job:  map 0% reduce 0%
+2023-06-24 09:10:13,323 INFO mapreduce.Job:  map 100% reduce 0%
+2023-06-24 09:10:19,378 INFO mapreduce.Job:  map 100% reduce 25%
+2023-06-24 09:10:20,386 INFO mapreduce.Job:  map 100% reduce 75%
+2023-06-24 09:10:21,399 INFO mapreduce.Job:  map 100% reduce 100%
+2023-06-24 09:10:22,426 INFO mapreduce.Job: Job job_1686760829182_0801 completed successfully
+2023-06-24 09:10:22,540 INFO mapreduce.Job: Counters: 54
+
+Elapsed Time: 20321.0 ms

@@ -1,0 +1,43 @@
+Silhouette Score:
+
+TEST1:
+Random = 0.829106417372867
+Iteration_Random: 3
+Kmeans++ = 0.829106417372867
+Iteration_Kmeans++: 2
+
+TEST2:
+Random = 0.6481208190731172
+Iteration_Random: 20
+Kmeans++ = 0.6491818097485862
+Iteration_Kmeans++: 2
+
+TEST3:
+Random = 0.6696753429180952
+Iteration_Random: 5
+Kmeans++ = 0.6672237393452742
+Iteration_Kmeans++: 20
+
+TEST4:
+Random = 0.6658674468167981
+Iteration_Random: 20
+Kmeans++ = 0.6688622501264121
+Iteration_Kmeans++: 20
+
+TEST5:
+Random = 0.493329406155786
+Iteration_Random: 20
+Kmeans++ = 0.5946338611824394
+Iteration_Kmeans++: 20
+
+TEST6:
+Random = 0.5349359789769187
+Iteration_Random: 20
+Kmeans++ = 0.5236450254998464
+Iteration_Kmeans++: 20
+
+TEST7:
+Random = 0.4575820224967407
+Iteration_Random: 20
+Kmeans++ = 0.7469265908144094
+Iteration_Kmeans++: 2
