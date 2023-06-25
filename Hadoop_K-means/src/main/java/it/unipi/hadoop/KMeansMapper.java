@@ -47,10 +47,6 @@ public class KMeansMapper extends Mapper<Object, Text, IntWritable, Point> {
             }
         }
         // Emit the ID of the nearest centroid and the point
-        if (centroid_id == null) {
-            System.out.println("Error: centroid_id is null");
-            return;
-        }
         context.write(centroid_id, point);
     }
 
