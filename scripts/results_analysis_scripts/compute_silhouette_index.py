@@ -5,7 +5,7 @@ import sys
 import os
 
 test_path = sys.argv[1]
-path = f'data/{test_path}/'
+path = f'../data/{test_path}/'
 
 # Leggi i dati dal file del dataset
 with open(f'{path}/dataset_test.csv', 'r') as f:
