@@ -29,9 +29,9 @@ The algorithm is tested and evaluated on seven different datasets, with variatio
 The tests, which are in the <a href="https://github.com/FedericoMontini98/Hadoop_K-means/scripts/data">scripts/data</a> directory,  were evaluated using a MATLAB plot for datasets with dimensions less than or equal to 3. For datasets with dimensions greater than 3, the Silhouette score was used to evaluate the algorithm's performance. However, for two tests, the results were not satisfactory, and the K-Means++ algorithm was used instead, which resulted in better performance. Additionally, the impact of the number of reducers on algorithm execution time was examined, and the average execution time for one iteration of the algorithm was recorded for different numbers of reducers. See the documentation in the <a href="https://github.com/FedericoMontini98/Hadoop_K-means/docs/">docs</a> directory for further details.
 
 
-<h2>💖Like my work?</h2>
+<h2>💖Like our work?</h2>
 
-Contact me if you have any corrections or additional features to offer.
+Contact us if you have any corrections or additional features to offer.
 
 <h2>👥 Authors:</h2>
 <ul>
