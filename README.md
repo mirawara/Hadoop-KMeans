@@ -26,7 +26,7 @@ The dimension and the structure of the dataset relies on specific parameters:
 
 The algorithm is tested and evaluated on seven different datasets, with variations in n, k and d.  
 
-The tests, which are in the <a href="https://github.com/FedericoMontini98/Hadoop_K-means/scripts/data">scripts/data</a> directory,  were evaluated using a MATLAB plot for datasets with dimensions less than or equal to 3. For datasets with dimensions greater than 3, the Silhouette score was used to evaluate the algorithm's performance. However, for two tests, the results were not satisfactory, and the K-Means++ algorithm was used instead, which resulted in better performance. Additionally, the impact of the number of reducers on algorithm execution time was examined, and the average execution time for one iteration of the algorithm was recorded for different numbers of reducers. See the documentation in the <a href="https://github.com/FedericoMontini98/Hadoop_K-means/docs/">docs</a> directory for further details.
+The tests, which are in the <a href="https://github.com/mirawara/Hadoop-KMeans/scripts/data">scripts/data</a> directory,  were evaluated using a MATLAB plot for datasets with dimensions less than or equal to 3. For datasets with dimensions greater than 3, the Silhouette score was used to evaluate the algorithm's performance. However, for two tests, the results were not satisfactory, and the K-Means++ algorithm was used instead, which resulted in better performance. Additionally, the impact of the number of reducers on algorithm execution time was examined, and the average execution time for one iteration of the algorithm was recorded for different numbers of reducers. See the documentation in the <a href="https://github.com/mirawara/Hadoop-KMeans/docs/">docs</a> directory for further details.
 
 
 <h2>💖Like our work?</h2>
@@ -35,8 +35,9 @@ Contact us if you have any corrections or additional features to offer.
 
 <h2>👥 Authors:</h2>
 <ul>
+ <li><a href="https://github.com/mirawara">Lorenzo Mirabella</a></li>
 <li><a href="https://github.com/FedericoMontini98">Federico Montini</a></li>
   <li><a href="https://github.com/FabrizioLanzillo">Fabrizio Lanzillo</a></li>
-  <li><a href="https://github.com/mirawara">Lorenzo Mirabella</a></li>
+  
 </ul>
 
