@@ -3,7 +3,7 @@ import sys
 import os
 
 test_path = sys.argv[1]
-path = f'data/{test_path}/'
+path = f'../data/{test_path}/'
 
 with open(f'{path}/output.txt', 'w') as output_file:
     for filename in os.listdir(path):

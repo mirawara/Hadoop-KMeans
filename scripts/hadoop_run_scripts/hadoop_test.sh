@@ -6,7 +6,7 @@ fi
 
 num_reducers="$1"
 
-for i in $(seq 1 7)
+for i in $(seq 3 3)
 do
     test="test$i"
     ./hadoop_run.sh $test $num_reducers

@@ -18,7 +18,7 @@ df = pd.DataFrame(points)
 
 df = df.apply(lambda x: (x - x.min()) / (x.max() - x.min()))
 
-df.to_csv(f'data/{folder_name}/dataset_test.csv', index=False, header=False)
+df.to_csv(f'../data/{folder_name}/dataset_test.csv', index=False, header=False)
 
 centroids = df.sample(n=centers)
 centroids.index = range(centers)
@@ -28,4 +28,4 @@ centroids.index = range(centers)
 #centroids = pd.DataFrame(kmeans.cluster_centers_)
 #centroids.index = range(centers)
 
-centroids.to_csv(f'data/{folder_name}/centroids_test.csv', index=True, header=False)
+centroids.to_csv(f'../data/{folder_name}/centroids_test.csv', index=True, header=False)
